@@ -30,7 +30,7 @@ const ClassroomList = () => {
             <ul>
                 {classrooms.map((room) => (
                     <li key={room._id}>
-                        {room.name} - קומה: {room.floor} (קיבולת: {room.capacity})
+                        {room.name} - קומה: {room.floor} (קיבולת: {room.capacity}) 
                     </li>
                 ))}
             </ul>
