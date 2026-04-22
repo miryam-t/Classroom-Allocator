@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const classroomSchema = new mongoose.Schema({
+    number:{type:Number, required:true},
     name: { type: String, required: true },
     floor: { type: Number, required: true },
     building: { type: String, default: 'Main' },

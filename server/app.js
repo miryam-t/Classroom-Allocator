@@ -1,15 +1,23 @@
+
+require('dotenv').config();
 const cors = require('cors'); // למעלה עם ה-require
 const mongoose = require('mongoose');
-const Classroom = require('./models/Classroom'); // ייבוא המודל
+const Classroom = require('./api/models/Classroom'); // ייבוא המודל
 const express = require('express');
 const app = express();
 const port = 3000;
-
-mongoose.connect('mongodb://localhost:27017/classroom_db')
-  .then(() => console.log('Connected to MongoDB!'))
-  .catch(err => console.error('Could not connect to MongoDB', err));
-
+//פתרון בעיית הcors
 app.use(cors()); 
+// חיבור למסד הנתונים
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => {
+        console.log('connect to mongoDB');
+    })
+    .catch(error => {
+        console.error(error);
+    })
+
+
 app.get('/', (req, res) => {
   res.send('Server is running!');
 });
