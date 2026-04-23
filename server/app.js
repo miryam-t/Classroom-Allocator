@@ -1,31 +1,35 @@
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import dotenv from 'dotenv';
+// ייבוא הראוטר והמודל בפורמט החדש
+import classroomRouter from './api/routes/classroom.js';
+import Classroom from './api/models/Classroom.js';
 
-require('dotenv').config();
-const cors = require('cors'); // למעלה עם ה-require
-const mongoose = require('mongoose');
-const Classroom = require('./api/models/Classroom'); // ייבוא המודל
-const express = require('express');
+dotenv.config();
+
 const app = express();
 const port = 3000;
-//פתרון בעיית הcors
-app.use(cors()); 
+
+app.use(cors());
+app.use(express.json()); // חשוב: מאפשר לשרת לקרוא JSON מה-body
+
 // חיבור למסד הנתונים
 mongoose.connect(process.env.MONGO_URI)
-    .then(() => {
-        console.log('connect to mongoDB');
-    })
-    .catch(error => {
-        console.error(error);
-    })
-
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(error => console.error('Connection error:', error));
 
 app.get('/', (req, res) => {
-  res.send('Server is running!');
+    res.send('Server is running with ES Modules!');
 });
 
+// שימוש בראוטר
+app.use('/api', classroomRouter);
 
+// שליפת כל הכיתות (נשאר ב-app.js לפי הקוד המקורי שלכן)
 app.get('/api/classrooms', async (req, res) => {
     try {
-        const classrooms = await Classroom.find(); // שליפה אמיתית מהמסד!
+        const classrooms = await Classroom.find();
         res.json(classrooms);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -33,5 +37,5 @@ app.get('/api/classrooms', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server listening at http://localhost:${port}`);
+    console.log(`Server listening at http://localhost:${port}`);
 });
