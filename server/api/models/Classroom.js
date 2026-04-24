@@ -1,24 +1,24 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const classroomSchema = new mongoose.Schema({
+    number: { type: Number, required: true, unique: true },
     name: { type: String, required: true },
     floor: { type: Number, required: true },
     building: { type: String, default: 'Main' },
     capacity: { type: Number, required: true },
     hasProjector: { type: Boolean, default: false },
     
-    // המערכים החדשים לפי הדרישה:
     allocations: [{ 
         day: String, 
         startTime: String, 
         endTime: String, 
         courseName: String 
-    }], // מערך של שיבוצים
+    }],
     
     cancellations: [{ 
         date: Date, 
         reason: String 
-    }] // מערך של ביטולים
+    }]
 });
 
-module.exports = mongoose.model('Classroom', classroomSchema);
+export default mongoose.model('Classroom', classroomSchema);
