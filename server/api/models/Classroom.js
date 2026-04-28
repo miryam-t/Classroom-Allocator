@@ -22,11 +22,12 @@ const classroomSchema = new mongoose.Schema({
         }
     }],
 
-    // מערך הביטולים - כולל שדות לחיפוש מהיר ללא צורך ב-Populate
+    //מערך הביטולים - כולל שדות לחיפוש מהיר
     cancellations: [{
         date: { type: Date, required: true },
         startTime: String, 
         endTime: String,
+        lessons: [Number], // מספרי השיעורים שבוטלו
         permanentAllocationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Permanent' },
         reason: String
     }]
