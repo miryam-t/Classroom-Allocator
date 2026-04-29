@@ -1,5 +1,23 @@
 import Classroom from '../models/Classroom.js';
 
+export const getAll = async (req, res) => {
+    try {
+        const classrooms = await Classroom.find();
+        res.json(classrooms);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+export const clearAllAllocations = async (req, res) => {
+    try {
+        await Classroom.updateMany({}, { $set: { allocations: [] } });
+        res.json({ message: "כל השיבוצים נוקו בהצלחה" });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
 export const getById = async (req, res) => {
     try {
         const classroom = await Classroom.findById(req.params.id);
