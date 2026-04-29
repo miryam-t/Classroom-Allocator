@@ -7,6 +7,7 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import ClassRoundedIcon from '@mui/icons-material/ClassRounded';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import AssessmentRoundedIcon from '@mui/icons-material/AssessmentRounded';
+import MeetingRoomRoundedIcon from '@mui/icons-material/MeetingRoomRounded';
 
 const Navbar = () => {
   const location = useLocation();
@@ -96,8 +97,18 @@ const Navbar = () => {
             icon={<AssessmentRoundedIcon sx={{ fontSize: 30, color: '#9c27b0' }} />}
           />
         </BottomNavigation>
+        {/* כפתור ניהול חדרים - אדום */}
+              <BottomNavigationAction
+    label="ניהול חדרים"
+    value="/room-management"
+    component={Link}
+    to="/room-management"
+    icon={<MeetingRoomRoundedIcon sx={{ fontSize: 30, color: '#ff9800' }} />}
+/>
       </Paper>
       
+
+
       {/* הוספת רווח בתחתית כדי שהתוכן של הדף לא יוסתר על ידי הסרגל */}
       <Box sx={{ height: 80 }} />
     </Box>
