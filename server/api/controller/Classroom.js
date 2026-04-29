@@ -52,3 +52,48 @@ export const deleteClassroom = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
+// --- הוספת ביטול חד-פעמי לפי ההערות החדשות של ציפורה---
+
+/**
+ * פונקציה להוספת ביטול למערך הביטולים של חדר ספציפי
+ * עדכון לפי "ביטול חכם ופירוק בלוקים" ח 
+ */
+export const addCancellation = async (req, res) => {
+    const { id } = req.params; // ה-ID של החדר
+    
+    //לוגיקת החיפוש הדו-כיוונית
+    // שימוש ב-startTime ו-endTime 
+    // כדי לאפשר למערכת לתרגם "מספר שיעור" לזמן אמת
+    const { date, startTime, endTime, reason } = req.body; 
+
+    try {
+        // מציאת החדר ועדכון מערך ה-cancellations שלו
+        // ביטול חכם: המערכת לא מוחקת, אלא "משכפלת" את נתוני הביטול לתוך מערך ה-cancellations
+        const updatedClassroom = await Classroom.findByIdAndUpdate(
+            id,
+            { 
+                $push: { 
+                    cancellations: { 
+                        date, 
+                        startTime, // הוספת שעת התחלה מדויקת לביטול בלוק/חלק מבלוק
+                        endTime,   // הוספת שעת סיום מדויקת
+                        reason 
+                    } 
+                } 
+            },
+            { new: true, runValidators: true } 
+        );
+
+        if (!updatedClassroom) {
+            return res.status(404).json({ message: 'Classroom not found' });
+        }
+
+        res.status(200).json({ 
+            message: 'הביטול התווסף בהצלחה למערכת החריגות', 
+            updatedClassroom 
+        });
+    } catch (err) {
+        res.status(500).json({ message: 'שגיאה בהוספת הביטול: ' + err.message });
+    }
+};
