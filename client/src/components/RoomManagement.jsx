@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import axios from 'axios';
 
 const RoomManagement = () => {
@@ -6,18 +6,18 @@ const RoomManagement = () => {
     const [loading, setLoading] = useState(true);
     const [sortConfig, setSortConfig] = useState({ key: 'name', direction: 'asc' });
 
-    useEffect(() => {
-        const fetchData = async () => {
+   
+        const fetchData = useCallback(async () => {
             try {
-                // הכתובת שטובי נתנה
-                const response = await axios.get('http://localhost:3000/api/classrooms');
+                const response = await axios.get('http://localhost:3000/api/classroom');
                 setClassrooms(response.data);
                 setLoading(false);
             } catch (error) {
                 console.error("שגיאה בשליפת נתונים:", error);
                 setLoading(false);
             }
-        };
+        }, []);
+         useEffect(() => {
         fetchData();
     }, []);
 
@@ -26,7 +26,7 @@ const RoomManagement = () => {
         if (window.confirm("האם את בטוחה שברצונך למחוק את החדר לצמיתות?")) {
             try {
                 // שליחת בקשת Delete לשרת לפי ה-ID של החדר
-                await axios.delete(`http://localhost:3000/api/classrooms/${id}`);
+                await axios.delete(`http://localhost:3000/api/classroom/${id}`);
                 // עדכון ה-State המקומי כדי שהחדר ייעלם מהטבלה מיד
                 setClassrooms(classrooms.filter(room => room._id !== id));
                 alert("החדר נמחק בהצלחה");
@@ -41,8 +41,7 @@ const RoomManagement = () => {
     const handleClearAll = async () => {
         if (window.confirm("האם את בטוחה שברצונך לנקות את כל השיבוצים במערכת?")) {
             try {
-                // קריאת API לשרת לניקוי השיבוצים (ודאי מול טובי שזה הנתיב)
-                await axios.post('http://localhost:3000/api/classrooms/clear-all-allocations');
+                await axios.post('http://localhost:3000/api/classroom/clear-all-allocations');
                 alert("כל השיבוצים נוקו בהצלחה");
                 fetchData(); // רענון הנתונים כדי לראות את השינוי בטבלה
             } catch (error) {
@@ -52,7 +51,7 @@ const RoomManagement = () => {
         }
     };
 
-    // לוגיקת המיון הנדרשת במשימה שלך
+    // לוגיקת המיון הנדרשת במשימה
     const sortedRooms = useMemo(() => {
         let sortableRooms = [...classrooms];
         if (sortConfig.key) {
@@ -111,7 +110,6 @@ const RoomManagement = () => {
                                 >
                                     🗑️ מחיקה
                                 </button>
-                                {/* <button style={{ color: 'red' }}>🗑️ מחיקה</button> */}
                             </td>
                         </tr>
                     ))}
