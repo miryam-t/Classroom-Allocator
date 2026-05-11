@@ -8,10 +8,11 @@ export const searchAvailableClassrooms = async (req, res) => {
             building,
             capacity,
             hasProjector,
-            day,
+            day, 
+             date,
             startTime,
             endTime,
-            date,
+          
             isTemporary
         } = req.query;
 

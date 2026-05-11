@@ -2,8 +2,11 @@ import { validDays, isValidTime } from '../utils/timeHelpers.js';
 
 // בדיקת תקינות יום, פורמט זמן וטווח שעות הגיוני
 export const validateScheduleParams = (req, res, next) => {
-    const { day, startTime, endTime } = req.query;
+   const { day, date, startTime, endTime } = req.query;
 
+   if ((startTime || endTime) && (!startTime || !endTime || (!day && !date))) {
+         return res.status(400).json({ message: 'startTime and endTime require either day or date' });
+    }
     if (day && !validDays.includes(day))
         return res.status(400).json({ message: 'Invalid day' });
 
