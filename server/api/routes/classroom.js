@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 // ייבוא הפונקציות מהקונטרולר - חובה לציין סיומת .js
-import { getById, createClassroom, updateClassroom, deleteClassroom } from '../controller/Classroom.js';
+// import { getById, createClassroom, updateClassroom, deleteClassroom } from '../controller/Classroom.js';
 import {searchAvailableClassrooms} from '../controller/searchClassroom.js'
 //ייבוא המידלוואר
 import { validateRoomParams } from '../middleware/validateRoom.js';
