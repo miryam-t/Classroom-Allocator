@@ -1,4 +1,6 @@
 import Classroom from '../models/Classroom.js';
+import permanentAllocation from '../models/permanentAllocation.js';
+import temporaryAllocation from '../models/temporaryAllocation.js';
 import { timeToMinutes, validDays } from '../utils/timeHelpers.js';
 
 export const getAll = async (req, res) => {
@@ -72,4 +74,25 @@ export const deleteClassroom = async (req, res) => {
     }
 };
 
+export const clearAllAllocationsFromAllClassrooms = async (req, res) => {
+    try {
+        // במקום למחוק, אנחנו רק סופרים כמה כאלו יש
+        const classroomsToUpdate = await Classroom.countDocuments({
+            $or: [{ "allocations.0": { $exists: true } }, { "cancellations.0": { $exists: true } }]
+        });
+        
+        const permanentCount = await permanentAllocation.countDocuments({});
+        const temporaryCount = await temporaryAllocation.countDocuments({});
 
+        console.log(`TEST MODE: I would have cleared ${classroomsToUpdate} classrooms.`);
+        console.log(`TEST MODE: I would have deleted ${permanentCount} permanent and ${temporaryCount} temporary allocations.`);
+
+        res.json({ 
+            message: "Test successful - no data was deleted", 
+            wouldDelete: { classroomsToUpdate, permanentCount, temporaryCount } 
+        });
+    } catch (error) {
+        console.error("BOOM! Error in reset function:", error);
+        res.status(500).json({ error: error.message });
+    }
+};
