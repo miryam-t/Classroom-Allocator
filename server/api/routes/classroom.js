@@ -2,6 +2,7 @@ import express from 'express';
 const router = express.Router();
 // ייבוא הפונקציות מהקונטרולר - חובה לציין סיומת .js
 // import { getById, createClassroom, updateClassroom, deleteClassroom } from '../controller/Classroom.js';
+import { getAll, clearAllAllocations, getById, createClassroom, updateClassroom, deleteClassroom, clearAllAllocationsFromAllClassrooms } from '../controller/Classroom.js';
 import {searchAvailableClassrooms} from '../controller/searchClassroom.js'
 //ייבוא המידלוואר
 import { validateRoomParams } from '../middleware/validateRoom.js';
@@ -20,12 +21,12 @@ router.get('/search',
     validateBookingParams, 
     searchAvailableClassrooms
 );
-import { getAll, clearAllAllocations, getById, createClassroom, updateClassroom, deleteClassroom } from '../controller/Classroom.js';
 router.get('/classroom', getAll);
 router.post('/classroom/clear-all-allocations', clearAllAllocations);
 router.get('/classroom/:id', getById);
 router.post('/classroom', createClassroom); 
 router.put('/classroom/:id', updateClassroom);
 router.delete('/classroom/:id', deleteClassroom);
-router.get('/search', searchAvailableClassrooms);
+router.delete('/reset-all-allocations', clearAllAllocationsFromAllClassrooms);
+
 export default router;

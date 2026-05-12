@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 // ייבוא הראוטר והמודל בפורמט החדש
 import classroomRouter from './api/routes/classroom.js';
 import Classroom from './api/models/Classroom.js';
+import allocationRoutes from './api/routes/allocation.js'; // להוסיף למעלה
 
 dotenv.config();
 
@@ -13,6 +14,8 @@ const port = 3000;
 
 app.use(cors());
 app.use(express.json()); // חשוב: מאפשר לשרת לקרוא JSON מה-body
+app.use('/api/allocations', allocationRoutes); // להוסיף איפה ששאר ה-routes
+
 
 // חיבור למסד הנתונים
 mongoose.connect(process.env.MONGO_URI)
