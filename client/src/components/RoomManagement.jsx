@@ -1,23 +1,33 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import axios from 'axios';
+import './WeeklySchedule.css';
+import WeeklySchedule from './WeeklySchedule';
 
 const RoomManagement = () => {
     const [classrooms, setClassrooms] = useState([]);
     const [loading, setLoading] = useState(true);
     const [sortConfig, setSortConfig] = useState({ key: 'name', direction: 'asc' });
 
-   
-        const fetchData = useCallback(async () => {
-            try {
-                const response = await axios.get('http://localhost:3000/api/classroom');
-                setClassrooms(response.data);
-                setLoading(false);
-            } catch (error) {
-                console.error("שגיאה בשליפת נתונים:", error);
-                setLoading(false);
-            }
-        }, []);
-         useEffect(() => {
+
+    const [isScheduleOpen, setIsScheduleOpen] = useState(false);
+    const [selectedRoom, setSelectedRoom] = useState(null);
+
+    const handleOpenSchedule = (room) => {
+        setSelectedRoom(room);
+        setIsScheduleOpen(true);
+    };
+
+    const fetchData = useCallback(async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/api/classroom');
+            setClassrooms(response.data);
+            setLoading(false);
+        } catch (error) {
+            console.error("שגיאה בשליפת נתונים:", error);
+            setLoading(false);
+        }
+    }, []);
+    useEffect(() => {
         fetchData();
     }, []);
 
@@ -76,7 +86,7 @@ const RoomManagement = () => {
     return (
         <div style={{ padding: '20px', direction: 'rtl' }}>
             <h1>ניהול חדרים</h1>
-            
+
             {/* כפתור ניקוי כללי לפי המשימה שלך */}
             <button onClick={handleClearAll} style={{ backgroundColor: 'red', color: 'white', marginBottom: '10px' }}>
                 ניקוי כל השיבוצים במערכת
@@ -96,18 +106,22 @@ const RoomManagement = () => {
                 </thead>
                 <tbody>
                     {sortedRooms.map((room) => (
-                        <tr key={room._id}>
-                            <td>{room.number}</td>
+                        <tr
+                            key={room._id}
+                            onClick={() => handleOpenSchedule(room)} // לחיצה על כל השורה תפתח את המערכת
+                            style={{ cursor: 'pointer' }} // גורם לסמן להפוך ליד
+                            className="room-row" // תוכלי להוסיף CSS ל-hover בנפרד
+                        >
                             <td>{room.name}</td>
                             <td>{room.building}</td>
                             <td>{room.floor}</td>
                             <td>{room.capacity}</td>
                             <td>{room.hasProjector ? '✅' : '❌'}</td>
-                            <td>
-                                {/* כפתורים הנדרשים במשימה */}
-                                <button>👁️ צפייה</button>
-                                <button>✏️ עריכה</button><button 
-                                    onClick={() => handleDelete(room._id)} 
+                            <td onClick={(e) => e.stopPropagation()}> {/* מונע מהכפתורים להפעיל את פתיחת החלון בטעות */}
+                                <button onClick={() => handleOpenSchedule(room)}>👁️ צפייה</button>
+                                <button>✏️ עריכה</button>
+                                <button
+                                    onClick={() => handleDelete(room._id)}
                                     style={{ color: 'red', cursor: 'pointer' }}
                                 >
                                     🗑️ מחיקה
@@ -117,6 +131,12 @@ const RoomManagement = () => {
                     ))}
                 </tbody>
             </table>
+            <WeeklySchedule
+                open={isScheduleOpen}
+                onClose={() => setIsScheduleOpen(false)}
+                roomId={selectedRoom?._id}
+                roomName={selectedRoom?.name}
+            />
         </div>
     );
 };

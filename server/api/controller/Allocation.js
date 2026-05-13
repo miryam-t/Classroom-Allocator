@@ -50,7 +50,7 @@ import Classroom from '../models/Classroom.js';
 import Permanent from '../models/permanentAllocation.js';
 import Temporary from '../models/temporaryAllocation.js';
 
-// 1. שיפור פונקציית השליפה - שימוש ב-Populate במקום שתי שאילתות נפרדות
+// 1. קבלת מערכת (קבוע + זמני) לחדר
 export const getRoomSchedule = async (req, res) => {
     try {
         const { roomId } = req.params;
@@ -73,7 +73,7 @@ export const getRoomSchedule = async (req, res) => {
     }
 };
 
-// 2. הוספת שיבוץ קבוע + עדכון מערך ה-Classroom
+// 2. הוספת שיבוץ קבוע
 export const addPermanent = async (req, res) => {
     try {
         const newAlloc = new Permanent(req.body);
@@ -92,37 +92,25 @@ export const addPermanent = async (req, res) => {
     }
 };
 
-// 3. הוספת שיבוץ זמני + עדכון מערך ה-Classroom
-export const addTemporary = async (req, res) => {
+// 3. עדכון שיבוץ קבוע
+export const updatePermanent = async (req, res) => {
     try {
-        const newAlloc = new Temporary(req.body);
-        await newAlloc.save();
-
-        await Classroom.findByIdAndUpdate(req.body.classroom, {
-            $push: { 
-                allocations: { allocationId: newAlloc._id, onModel: 'Temporary' } 
-            }
-        });
-
-        res.status(201).json(newAlloc);
+        const updated = await Permanent.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json(updated);
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
 };
 
-// 4. ניקוי לוח זמנים - כולל מחיקת המסמכים וריקון המערך בחדר
-export const clearRoomSchedule = async (req, res) => {
+// 4. מחיקת שיבוץ בודד או כל המערכת
+export const deleteAllocation = async (req, res) => {
     try {
-        const { roomId } = req.params;
-
-        // ביצוע כל המחיקות במקביל לביצועים טובים יותר
-        await Promise.all([
-            Permanent.deleteMany({ classroom: roomId }),
-            Temporary.deleteMany({ classroom: roomId }),
-            Classroom.findByIdAndUpdate(roomId, { $set: { allocations: [] } }) // ריקון המערך
-        ]);
-
-        res.json({ message: "המערכת לחדר זה נוקתה בהצלחה מהטבלאות ומהמערך" });
+        const { id } = req.params;
+        // אם ה-ID שנשלח הוא של חדר - נמחק הכל. אם זה ID של שיבוץ - נמחק רק אותו.
+        // לבינתיים, בשביל ה-CRUD הפשוט:
+        await Permanent.findByIdAndDelete(id);
+        await Temporary.findByIdAndDelete(id); 
+        res.json({ message: "הפעולה בוצעה בהצלחה" });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
