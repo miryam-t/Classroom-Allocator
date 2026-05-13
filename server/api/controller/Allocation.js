@@ -1,7 +1,7 @@
 import Permanent from '../models/permanentAllocation.js';
 import Temporary from '../models/temporaryAllocation.js';
 
-// שליפת כל השיבוצים הקבועים לחדר ספציפי
+// 1. קבלת מערכת (קבוע + זמני) לחדר
 export const getRoomSchedule = async (req, res) => {
     try {
         const { roomId } = req.params;
@@ -13,7 +13,7 @@ export const getRoomSchedule = async (req, res) => {
     }
 };
 
-// הוספת שיבוץ קבוע
+// 2. הוספת שיבוץ קבוע
 export const addPermanent = async (req, res) => {
     try {
         const newAlloc = new Permanent(req.body);
@@ -24,13 +24,25 @@ export const addPermanent = async (req, res) => {
     }
 };
 
-// מחיקת כל השיבוצים לחדר מסוים
-export const clearRoomSchedule = async (req, res) => {
+// 3. עדכון שיבוץ קבוע
+export const updatePermanent = async (req, res) => {
     try {
-        const { roomId } = req.params;
-        await Permanent.deleteMany({ classroom: roomId });
-        await Temporary.deleteMany({ classroom: roomId });
-        res.json({ message: "המערכת לחדר זה נוקתה בהצלחה" });
+        const updated = await Permanent.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json(updated);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+};
+
+// 4. מחיקת שיבוץ בודד או כל המערכת
+export const deleteAllocation = async (req, res) => {
+    try {
+        const { id } = req.params;
+        // אם ה-ID שנשלח הוא של חדר - נמחק הכל. אם זה ID של שיבוץ - נמחק רק אותו.
+        // לבינתיים, בשביל ה-CRUD הפשוט:
+        await Permanent.findByIdAndDelete(id);
+        await Temporary.findByIdAndDelete(id); 
+        res.json({ message: "הפעולה בוצעה בהצלחה" });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

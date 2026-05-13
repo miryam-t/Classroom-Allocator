@@ -1,0 +1,66 @@
+/* אפקט הטשטוש לרקע של החלון */
+.MuiBackdrop-root {
+    backdrop-filter: blur(8px) !important;
+    background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* עיצוב הטבלה בתוך המודאל */
+.schedule-table-container {
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    background: #ffffff;
+}
+
+/* עיצוב שורת הכותרת של הימים */
+.schedule-header-cell {
+    background-color: #f8fafc !important;
+    color: #1e293b !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+/* עיצוב תא שעה */
+.hour-cell {
+    background-color: #f1f5f9;
+    font-weight: 600;
+    color: #475569;
+    border-right: 1px solid #e2e8f0;
+}
+
+/* אפקט מעבר עכבר על תאי הטבלה */
+.schedule-cell {
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.schedule-cell:hover {
+    background-color: #f0f7ff;
+}
+
+/* עיצוב כותרת המודאל */
+.modal-header-gradient {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: white;
+    padding: 24px;
+}
+
+/* עיצוב כפתורים מעוגלים */
+.action-button {
+    border-radius: 8px !important;
+    text-transform: none !important;
+    font-weight: 600 !important;
+}
+
+/* עיצוב השורה בטבלת החדרים הראשית (הזמנה ללחיצה) */
+.room-row {
+    transition: background-color 0.3s ease;
+}
+
+.room-row:hover {
+    background-color: #f8fafc !important;
+    box-shadow: inset 4px 0 0 #3b82f6; /* פס כחול עדין בצד בשביל הסטייל */
+}
