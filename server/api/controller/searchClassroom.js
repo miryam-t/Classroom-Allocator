@@ -34,7 +34,7 @@ export const searchAvailableClassrooms = async (req, res) => {
         if (floor) filter.floor = Number(floor);
         if (building) filter.building = building;
         if (capacity) filter.capacity = { $gte: Number(capacity) };
-        if (hasProjector && hasProjector !== '') filter.hasProjector = hasProjector === 'true';
+        if (hasProjector) filter.hasProjector = hasProjector === 'true';
 
         // populate עם select — שולף רק שדות נדרשים לביצועים טובים יותר
         // lean — 
@@ -77,23 +77,32 @@ export const searchAvailableClassrooms = async (req, res) => {
 
                     // Permanent — בדיקה לפי יום
 
-                    if (onModel === 'Permanent') {
-                        if (allocationId.day !== effectiveDay) return false;
+                  // Permanent — בדיקה לפי יום וטווח תאריכים
+if (onModel === 'Permanent') {
+    // 1. Check if the day matches (e.g., is it Sunday?)
+    if (allocationId.day !== effectiveDay) return false;
 
-                        // בדיקת ביטול — האם מכסה את השעות המבוקשות?
-                        if (requestedDate) {
-                            const isCancelled = isCancelledForSlot(
-                                classroom.cancellations,
-                                requestedDate,
-                                startTime,
-                                endTime
-                            );
-                            // אם בוטל — החדר פנוי
-                            if (isCancelled) return false;
-                        }
+    // 2. NEW: Check if the requested date is within the Permanent range
+    if (requestedDate) {
+        const start = allocationId.startDate ? new Date(allocationId.startDate) : null;
+        const end = allocationId.endDate ? new Date(allocationId.endDate) : null;
+        
+        // If the search is OUTSIDE the school year/semester range, the room is FREE
+        if (start && requestedDate < start) return false;
+        if (end && requestedDate > end) return false;
 
-                        return true;
-                    }
+        // 3. Check for cancellations (Your existing logic)
+        const isCancelled = isCancelledForSlot(
+            classroom.cancellations,
+            requestedDate,
+            startTime,
+            endTime
+        );
+        if (isCancelled) return false;
+    }
+
+    return true; // If day matches AND date is in range AND not cancelled
+}
 
                     // Temporary — בדיקה לפי תאריך
 
