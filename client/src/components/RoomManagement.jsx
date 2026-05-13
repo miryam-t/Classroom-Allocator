@@ -95,6 +95,7 @@ const RoomManagement = () => {
             <table border="1" style={{ width: '100%', textAlign: 'center', borderCollapse: 'collapse' }}>
                 <thead>
                     <tr style={{ backgroundColor: '#e6ffed' }}>
+                        <th onClick={() => requestSort('number')} style={{ cursor: 'pointer' }}>מספר חדר ↕</th>
                         <th onClick={() => requestSort('name')} style={{ cursor: 'pointer' }}>שם חדר ↕</th>
                         <th onClick={() => requestSort('building')} style={{ cursor: 'pointer' }}>אגף/בניין ↕</th>
                         <th onClick={() => requestSort('floor')} style={{ cursor: 'pointer' }}>קומה ↕</th>

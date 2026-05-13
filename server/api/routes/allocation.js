@@ -13,3 +13,4 @@ router.put('/:id', updatePermanent);    // מעדכן שיבוץ קיים לפי
 router.delete('/:id', deleteAllocation); // מוחק שיבוץ לפי ה-ID שלו
 
 export default router;
+

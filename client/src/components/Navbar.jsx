@@ -1,5 +1,4 @@
 
-// export default Navbar;
 import React, { useState } from 'react';
 import { Paper, BottomNavigation, BottomNavigationAction, Box } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
@@ -72,9 +71,9 @@ const Navbar = () => {
           {/* כפתור שיבוץ חדש - כתום/גרדיאנט בולט */}
           <BottomNavigationAction
             label="שיבוץ"
-            value="/allocate"
+            value="/SearchClass"
             component={Link}
-            to="/allocate"
+            to="/SearchClass"
             icon={
               <Box sx={{
                 background: 'linear-gradient(45deg, #fe6b8b 30%, #ff8e53 90%)',
@@ -96,7 +95,7 @@ const Navbar = () => {
             to="/reports"
             icon={<AssessmentRoundedIcon sx={{ fontSize: 30, color: '#9c27b0' }} />}
           />
-        </BottomNavigation>
+        
         {/* כפתור ניהול חדרים - אדום */}
               <BottomNavigationAction
     label="ניהול חדרים"
@@ -105,6 +104,7 @@ const Navbar = () => {
     to="/room-management"
     icon={<MeetingRoomRoundedIcon sx={{ fontSize: 30, color: '#ff9800' }} />}
 />
+</BottomNavigation>
       </Paper>
       
 

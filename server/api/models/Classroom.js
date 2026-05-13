@@ -5,7 +5,7 @@ const classroomSchema = new mongoose.Schema({
     name: { type: String, required: true },
     floor: { type: Number, required: true },
     capacity: { type: Number, required: true },
-    building: { type: String, default: 'Main' },
+    building: { type: String, enum: ['אגף ימין', 'אגף שמאל','אגף חדש']},
     hasProjector: { type: Boolean, default: false },
 
     // מערך השיבוצים שמכיל הפניות (IDs) לשיבוצים קבועים או זמניים
